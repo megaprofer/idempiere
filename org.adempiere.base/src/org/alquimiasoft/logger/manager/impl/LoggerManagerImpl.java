@@ -5,8 +5,7 @@ import java.util.logging.Level;
 import org.alquimiasoft.logger.manager.LoggerManager;
 //import org.alquimiasoft.logger.LoggerActivator;
 import org.alquimiasoft.logger.template.LoggerTemplate;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 //import org.apache.logging.log4j.LogManager;
 //import org.apache.logging.log4j.core.Logger;
 import org.compiere.util.CLogger;
