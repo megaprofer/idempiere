@@ -96,3 +96,17 @@ RemoteSystemsTempFiles
 fitnesse/FitNesseRoot/FitLibraryWeb/*.zip
 
 org.idempiere.javadoc/API
+
+org\.adempiere\.base\.callout/\.settings/
+
+org\.adempiere\.base\.process/\.classpath
+
+org\.adempiere\.base\.callout/\.classpath
+
+org.adempiere.base.callout/.classpath
+
+*/.classpath
+**/.classpath
+*.classpath
+**.classpath
+
