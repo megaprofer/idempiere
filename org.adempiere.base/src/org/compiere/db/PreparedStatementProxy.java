@@ -45,6 +45,17 @@ public class PreparedStatementProxy extends StatementProxy {
 		init();
 	} // PreparedStatementProxy
 	
+	public PreparedStatementProxy(String sql0, String trxName,int resultSetType, int resultSetConcurrency) {
+		if (sql0 == null || sql0.length() == 0)
+			throw new IllegalArgumentException("sql required");
+
+		p_vo = new CStatementVO(resultSetType, resultSetConcurrency, DB
+				.getDatabase().convertStatement(sql0).replace("\"limit\"", "limit"));
+		p_vo.setTrxName(trxName);
+
+		init();
+	}
+	
 	public PreparedStatementProxy(CStatementVO vo)
 	{
 		super(vo);
