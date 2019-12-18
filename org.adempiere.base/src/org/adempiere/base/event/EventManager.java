@@ -20,10 +20,18 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.adempiere.base.BaseActivator;
+import org.alquimiasoft.logger.manager.LoggerManager;
+import org.alquimiasoft.logger.manager.impl.LoggerManagerImpl;
+import org.alquimiasoft.logger.template.LoggerTemplateBuilder;
+import org.alquimiasoft.logger.util.Chronometer;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
@@ -46,6 +54,7 @@ public class EventManager implements IEventManager {
 
 	private Map<EventHandler, List<ServiceRegistration<?>>> registrations = new HashMap<EventHandler, List<ServiceRegistration<?>>>();
 
+	BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
 	/**
 	 * @param eventAdmin
 	 */
@@ -99,8 +108,31 @@ public class EventManager implements IEventManager {
 	 */
 	@Override
 	public boolean sendEvent(Event event) {
+		LoggerManager loggerManager = new LoggerManagerImpl();
 		if (eventAdmin != null) {
+			Chronometer chronometer = new Chronometer();
+			Object classTarget = event.getProperty("event.data");
+			String trackID =UUID.randomUUID().toString();
+			if (classTarget != null) {
+				loggerManager.writeLoggerTemplate(LoggerTemplateBuilder.event().clazz(classTarget.getClass().getName())
+						.action(event.getTopic()).trackId(trackID).duration(0).level("INFO_START")
+						.userId(Env.getAD_User_ID(Env.getCtx())).process(""));
+			}
+			chronometer.start();
 			eventAdmin.sendEvent(event);
+			chronometer.stop();
+			Object obMsg = event.getProperty("event.errorMessages");
+			String msg ="";
+			if (obMsg!=null)
+				msg = obMsg.toString();
+			if (classTarget != null) {
+				loggerManager.writeLoggerTemplate(LoggerTemplateBuilder.event().clazz(classTarget.getClass().getName())
+						.action(event.getTopic())
+						.trackId(trackID)
+						.message(msg)
+						.duration(chronometer.getTotalTime()).level("INFO_END")
+						.userId(Env.getAD_User_ID(Env.getCtx())).process(""));
+			}
 			return true;
 		}
 		return false;
