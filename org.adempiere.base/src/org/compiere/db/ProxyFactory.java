@@ -51,6 +51,11 @@ public class ProxyFactory {
 	 */
 	public static CPreparedStatement newCPreparedStatement(int resultSetType,
 			int resultSetConcurrency, String sql, String trxName) {
+		if(sql.toLowerCase().contains(" limit ")) {
+			return (CPreparedStatement)Proxy.newProxyInstance(CPreparedStatement.class.getClassLoader(), 
+					new Class[]{CPreparedStatement.class}, 
+					new PreparedStatementProxy(sql, trxName, resultSetType, resultSetConcurrency));
+		}
 		return (CPreparedStatement)Proxy.newProxyInstance(CPreparedStatement.class.getClassLoader(), 
 				new Class[]{CPreparedStatement.class}, 
 				new PreparedStatementProxy(resultSetType, resultSetConcurrency, sql, trxName));
