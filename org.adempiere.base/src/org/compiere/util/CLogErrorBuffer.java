@@ -308,11 +308,11 @@ public class CLogErrorBuffer extends Handler
 	{
 		checkContext();
 
-		@SuppressWarnings("unchecked")
-		LinkedList<LogRecord> m_logs = (LinkedList<LogRecord>) Env.getCtx().get(LOGS_KEY);
+		//@SuppressWarnings("unchecked")
+		//LinkedList<LogRecord> m_logs = (LinkedList<LogRecord>) Env.getCtx().get(LOGS_KEY);
 		@SuppressWarnings("unchecked")
 		LinkedList<LogRecord> m_errors = (LinkedList<LogRecord>) Env.getCtx().get(ERRORS_KEY);
-		LogRecord[] retValue = null;
+		LogRecord[] retValue = new LogRecord[0];
 		if (errorsOnly)
 		{
 			synchronized (m_errors)
@@ -323,11 +323,11 @@ public class CLogErrorBuffer extends Handler
 		}
 		else
 		{
-			synchronized (m_logs)
-			{
-				retValue = new LogRecord[m_logs.size()];
-				m_logs.toArray(retValue);
-			}
+//			synchronized (m_logs)
+//			{
+//				retValue = new LogRecord[m_logs.size()];
+//				m_logs.toArray(retValue);
+//			}
 		}
 		return retValue;
 	}	//	getEvents
