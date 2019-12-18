@@ -48,6 +48,11 @@
 									<artifactId>avalon-framework-api</artifactId>
 									<version>4.3.1</version>
 								</artifactItem>
+								<artifactItem>
+									<groupId>org.apache.logging.log4j</groupId>
+									<artifactId>log4j-api</artifactId>
+									<version>2.11.1</version>
+								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>
 							<stripVersion>true</stripVersion>
