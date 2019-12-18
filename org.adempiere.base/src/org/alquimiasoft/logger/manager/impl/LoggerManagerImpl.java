@@ -3,14 +3,8 @@ package org.alquimiasoft.logger.manager.impl;
 import java.util.logging.Level;
 
 import org.alquimiasoft.logger.manager.LoggerManager;
-//import org.alquimiasoft.logger.LoggerActivator;
 import org.alquimiasoft.logger.template.LoggerTemplate;
-
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.core.Logger;
 import org.compiere.util.CLogger;
-
-//import com.alquimiasoft.base.CustomCalloutFactory;
 
 public class LoggerManagerImpl implements LoggerManager{
 
