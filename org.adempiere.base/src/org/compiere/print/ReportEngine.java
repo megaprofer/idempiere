@@ -65,6 +65,7 @@ import org.adempiere.pdf.Document;
 import org.adempiere.print.export.PrintDataExcelExporter;
 import org.apache.ecs.XhtmlDocument;
 import org.apache.ecs.xhtml.a;
+import org.apache.ecs.xhtml.link;
 import org.apache.ecs.xhtml.script;
 import org.apache.ecs.xhtml.table;
 import org.apache.ecs.xhtml.tbody;
@@ -89,6 +90,7 @@ import org.compiere.model.MRfQResponse;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
+import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.layout.LayoutEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
@@ -193,41 +195,41 @@ public class ReportEngine implements PrintServiceAttributeListener
 	}	//	ReportEngine
 
 	/**	Static Logger	*/
-	private static CLogger	log	= CLogger.getCLogger (ReportEngine.class);
+	protected static CLogger	log	= CLogger.getCLogger (ReportEngine.class);
 
 	/**	Context					*/
-	private Properties		m_ctx;
+	protected Properties		m_ctx;
 
 	/**	Print Format			*/
-	private MPrintFormat	m_printFormat;
+	protected MPrintFormat	m_printFormat;
 	/** Print Info				*/
-	private PrintInfo		m_info;
+	protected PrintInfo		m_info;
 	/**	Query					*/
-	private MQuery			m_query;
+	protected MQuery			m_query;
 	/**	Query Data				*/
-	private PrintData		m_printData;
+	protected PrintData		m_printData;
 	/** Layout					*/
-	private LayoutEngine 	m_layout = null;
+	protected LayoutEngine 	m_layout = null;
 	/**	Printer					*/
-	private String			m_printerName = Ini.getProperty(Ini.P_PRINTER);	
+	protected String			m_printerName = Ini.getProperty(Ini.P_PRINTER);	
 	/** Transaction Name 		*/
-	private String 			m_trxName = null;
+	protected String 			m_trxName = null;
 	/** Where filter */
-	private String 			m_whereExtended = null;
+	protected String 			m_whereExtended = null;
 	/** Window */
-	private int m_windowNo = 0;
+	protected int m_windowNo = 0;
 	
-	private int m_language_id = 0;
+	protected int m_language_id = 0;
 	
-	private boolean m_summary = false;
+	protected boolean m_summary = false;
 	
 	/**
 	 * store all column has same css rule into a list
 	 * for IDEMPIERE-2640
 	 */
-	private Map<CSSInfo, List<ColumnInfo>> mapCssInfo = new HashMap<CSSInfo, List<ColumnInfo>>();
+	protected Map<CSSInfo, List<ColumnInfo>> mapCssInfo = new HashMap<CSSInfo, List<ColumnInfo>>();
 	
-	private List<IReportEngineEventListener> eventListeners = new ArrayList<IReportEngineEventListener>();
+	protected List<IReportEngineEventListener> eventListeners = new ArrayList<IReportEngineEventListener>();
 
 	public void addEventListener(IReportEngineEventListener listener)
 	{
