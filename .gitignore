@@ -10,7 +10,6 @@ org.idempiere.hazelcast.service.config/bin
 runtime-server.product
 org.idempiere.fitnesse.server/FitNesseRoot
 syntax: regexp
-adempiere
 org.adempiere.install/lib
 org.adempiere.install/bin/**
 org.adempiere.ui.zk/dist
