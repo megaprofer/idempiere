@@ -24,11 +24,16 @@ import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import javax.script.ScriptEngine;
 
 import org.adempiere.base.Core;
+import org.alquimiasoft.logger.manager.LoggerManager;
+import org.alquimiasoft.logger.manager.impl.LoggerManagerImpl;
+import org.alquimiasoft.logger.template.LoggerTemplateBuilder;
+import org.alquimiasoft.logger.util.Chronometer;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MProcess;
 import org.compiere.model.MRule;
@@ -43,6 +48,9 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.wf.MWFProcess;
 import org.compiere.wf.MWorkflow;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 /**
  *
@@ -55,6 +63,8 @@ import org.compiere.wf.MWorkflow;
 public final class ProcessUtil {
 
 	public static final String JASPER_STARTER_CLASS = "org.adempiere.report.jasper.ReportStarter";
+	public static BundleContext bundleContext = FrameworkUtil.getBundle(
+			ProcessUtil.class).getBundleContext();
 
 	/**	Logger				*/
 	private static final CLogger log = CLogger.getCLogger(ProcessUtil.class);
@@ -170,7 +180,7 @@ public final class ProcessUtil {
 		{			
 			Thread.currentThread().setContextClassLoader(process.getClass().getClassLoader());
 			process.setProcessUI(processMonitor);
-			success = process.startProcess(ctx, pi, trx);
+			success = execMethod(ctx, pi, trx, process);
 			if (success && trx != null && managedTrx)
 			{
 				trx.commit(true);
@@ -332,5 +342,28 @@ public final class ProcessUtil {
 		return startJavaProcess(ctx, pi, trx, false);
 	}
 
+	private static boolean execMethod(Properties ctx, ProcessInfo pi, Trx trx,
+			ProcessCall process) {
 
+		Chronometer chronometer = new Chronometer();
+		String trackId = UUID.randomUUID().toString();
+		LoggerManager loggerManager = new LoggerManagerImpl();
+
+		loggerManager.writeLoggerTemplate(LoggerTemplateBuilder.process()
+				.clazz(ProcessUtil.class.getName())
+				.process(process.getClass().getName()).trackId(trackId)
+				.userId(Env.getAD_User_ID(Env.getCtx())).level("INFO_START"));
+		
+		chronometer.start();
+		boolean result = process.startProcess(ctx, pi, trx);
+		chronometer.stop();
+		loggerManager.writeLoggerTemplate(LoggerTemplateBuilder.process()
+				.clazz(ProcessUtil.class.getName())
+				.process(process.getClass().getName())
+				.duration(chronometer.getTotalTime()).trackId(trackId)
+				.userId(Env.getAD_User_ID(Env.getCtx())).level("INFO_END"));
+
+		return result;
+	}
+	
 }
