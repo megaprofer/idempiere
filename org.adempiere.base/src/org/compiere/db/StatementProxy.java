@@ -20,18 +20,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import javax.sql.RowSet;
 
 import org.adempiere.exceptions.DBException;
+import org.alquimiasoft.logger.manager.LoggerManager;
+import org.alquimiasoft.logger.manager.impl.LoggerManagerImpl;
+import org.alquimiasoft.logger.template.LoggerTemplateBuilder;
+import org.alquimiasoft.logger.util.Chronometer;
 import org.compiere.util.CCachedRowSet;
 import org.compiere.util.CLogger;
 import org.compiere.util.CStatementVO;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.idempiere.db.util.AutoCommitConnectionBroker;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  *
@@ -41,7 +49,8 @@ import org.idempiere.db.util.AutoCommitConnectionBroker;
 public class StatementProxy implements InvocationHandler {
 
 	protected Connection m_conn = null;
-	
+	BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass())
+			.getBundleContext();
 	private boolean close = false;
 	
 	/**	Logger							*/
@@ -127,7 +136,35 @@ public class StatementProxy implements InvocationHandler {
 		Method m = p_stmt.getClass().getMethod(name, method.getParameterTypes());
 		try
 		{
-			return m.invoke(p_stmt, args);
+			Chronometer chronometer = new Chronometer();
+			String trackID =UUID.randomUUID().toString();
+			int userID =Env.getAD_User_ID(Env.getCtx());
+			if(name.equals("executeQuery") || name.equals("executeUpdate")
+					|| name.equals("execute") ) {
+					LoggerManager loggerManager = new LoggerManagerImpl();
+					loggerManager.writeLoggerTemplate(LoggerTemplateBuilder.statement()
+							.clazz(this.getClass().getName())
+							.userId(userID)
+							.trackID(trackID)
+							.sql(this.getSql())
+							.duration(0).level("INFO_START"),Level.INFO);
+			}
+			chronometer.start();
+			Object result = m.invoke(p_stmt, args);
+			chronometer.stop();
+			if(name.equals("executeQuery") || name.equals("executeUpdate")
+				|| name.equals("execute") ) {
+				LoggerManager loggerManager = new LoggerManagerImpl();
+				loggerManager.writeLoggerTemplate(LoggerTemplateBuilder.statement()
+						.clazz(this.getClass().getName())
+						.userId(userID)
+						.trackID(trackID)
+						.sql(this.getSql())
+						.duration(chronometer.getTotalTime()).level("INFO_END"),Level.INFO);
+			}
+			
+
+			return result;
 		}
 		catch (InvocationTargetException e)
 		{
