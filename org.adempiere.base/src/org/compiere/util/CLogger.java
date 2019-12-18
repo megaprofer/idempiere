@@ -16,6 +16,12 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -26,13 +32,17 @@ import java.util.logging.Logger;
  *  @author Jorg Janke
  *  @version $Id: CLogger.java,v 1.3 2006/08/09 16:38:47 jjanke Exp $
  */
-public class CLogger extends Logger
+public class CLogger extends Logger implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final String LAST_INFO = "org.compiere.util.CLogger.lastInfo";
 	private static final String LAST_WARNING = "org.compiere.util.CLogger.lastWarning";
 	private static final String LAST_ERROR = "org.compiere.util.CLogger.lastError";
 	private static final String LAST_EXCEPTION = "org.compiere.util.CLogger.lastException";
-
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
 	/**
 	 * 	Get Logger
@@ -345,4 +355,295 @@ public class CLogger extends Logger
 		return getLogger(m_className);
 	}
 	/** **/
+	
+	@Override
+    public void log(Level level, String msg, Throwable thrown) {
+		String newMsg="";
+		if (msg!=null)
+			if (msg.contains("ATIX")){
+				newMsg = msg;
+			}else{
+				newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" thrown=\"%s\" trackId=\"%s\" level=\"%s\" msg=\"%s\" userId=\"%s\"",
+						DATE_FORMAT.format(new Date()),
+						"CORE",
+						thrown.toString(),
+						UUID.randomUUID().toString(), 
+						level,
+						msg,
+						Env.getAD_User_ID(Env.getCtx()));
+			}
+		super.log(level, newMsg, thrown);
+        
+    }
+	@Override
+    public void log(Level level, String msg) {
+		String newMsg="";
+		if (msg!=null)
+			if (msg.contains("ATIX")){
+				newMsg = msg;
+			}else{
+				newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" trackId=\"%s\" level=\"%s\" msg=\"%s\" userId=\"%s\"",
+						DATE_FORMAT.format(new Date()),
+						"CORE",
+						UUID.randomUUID().toString(), 
+						level,
+						msg,
+						Env.getAD_User_ID(Env.getCtx()));
+			}
+		super.log(level, newMsg);
+    }
+	
+	@Override
+    public void log(Level level, String msg, Object param1) {
+		String newMsg="";
+		if (msg!=null)
+			if (msg.contains("ATIX")){
+				newMsg = msg;
+			}else{
+				newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" trackId=\"%s\" level=\"%s\" msg=\"%s\" userId=\"%s\"",
+						DATE_FORMAT.format(new Date()),
+						"CORE",
+						UUID.randomUUID().toString(), 
+						level,
+						msg,
+						Env.getAD_User_ID(Env.getCtx()));
+			}
+		
+		super.log(level, newMsg,param1);
+    }
+	
+	@Override
+    public void log(Level level, String msg, Object params[]) {
+		String newMsg="";
+		if (msg!=null)
+			if (msg.contains("ATIX")){
+				newMsg = msg;
+			}else{
+				newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" trackId=\"%s\" level=\"%s\" msg=\"%s\" userId=\"%s\"",
+						DATE_FORMAT.format(new Date()),
+						"CORE",
+						UUID.randomUUID().toString(), 
+						level,
+						msg,
+						Env.getAD_User_ID(Env.getCtx()));
+			}
+		
+		super.log(level, newMsg,params);
+    }
+	
+	@Override
+    public void logp(Level level, String sourceClass, String sourceMethod, String msg) {
+		String newMsg="";
+		if (msg!=null)
+			if (msg.contains("ATIX")){
+				newMsg = msg;
+			}else{
+				 newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" trackId=\"%s\" level=\"%s\" msg=\"%s\" sourceClass=\"%s\" sourcemethod=\"%s\" userId=\"%s\"",
+							DATE_FORMAT.format(new Date()),
+							"CORE",
+							UUID.randomUUID().toString(), 
+							level,
+							msg,
+							sourceClass,
+							sourceMethod,
+							Env.getAD_User_ID(Env.getCtx()));
+			}
+        super.logp(level, sourceClass,sourceMethod,newMsg);
+    }
+	@Override
+    public void logp(Level level, String sourceClass, String sourceMethod,
+            String msg, Object param1) {
+		String newMsg="";
+		if (msg!=null)
+			if (msg.contains("ATIX")){
+				newMsg = msg;
+			}else{
+				newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" trackId=\"%s\" level=\"%s\" msg=\"%s\" sourceClass=\"%s\" sourcemethod=\"%s\" userId=\"%s\"",
+						DATE_FORMAT.format(new Date()),
+						"CORE",
+						UUID.randomUUID().toString(), 
+						level,
+						msg,
+						sourceClass,
+						sourceMethod,
+						Env.getAD_User_ID(Env.getCtx()));
+			}
+    	
+    	super.logp(level, sourceClass, sourceMethod, newMsg, param1);
+    }	
+	@Override
+    public void logp(Level level, String sourceClass, String sourceMethod,
+            String msg, Object params[]) {
+		
+		String newMsg="";
+		if (msg!=null)
+			if (msg.contains("ATIX")){
+				newMsg = msg;
+			}else{
+				newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" trackId=\"%s\" level=\"%s\" msg=\"%s\" sourceClass=\"%s\" sourcemethod=\"%s\" userId=\"%s\"",
+						DATE_FORMAT.format(new Date()),
+						"CORE",
+						UUID.randomUUID().toString(), 
+						level,
+						msg,
+						sourceClass,
+						sourceMethod,
+						Env.getAD_User_ID(Env.getCtx()));
+			}
+    	
+    	super.logp(level, sourceClass, sourceMethod, newMsg, params);
+    }
+	@Override
+    public void logp(Level level, String sourceClass, String sourceMethod,
+            String msg, Throwable thrown) {
+		String newMsg="";
+		if (msg!=null)
+			if (msg.contains("ATIX")){
+				newMsg = msg;
+			}else{
+				newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" thrown=\"%s\" trackId=\"%s\" level=\"%s\" msg=\"%s\" sourceClass=\"%s\" sourcemethod=\"%s\" userId=\"%s\"",
+						DATE_FORMAT.format(new Date()),
+						"CORE",
+						thrown.toString(),
+						UUID.randomUUID().toString(), 
+						level,
+						msg,
+						sourceClass,
+						sourceMethod,
+						Env.getAD_User_ID(Env.getCtx()));
+		    	
+			}
+    	super.logp(level, sourceClass, sourceMethod, newMsg, thrown);
+    }
+	@Override
+    public void logrb(Level level, String sourceClass, String sourceMethod,
+            String bundleName, String msg) {
+		String newMsg="";
+		if (msg!=null)
+			if (msg.contains("ATIX")){
+				newMsg = msg;
+			}else{
+				newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" trackId=\"%s\" level=\"%s\" msg=\"%s\" sourceClass=\"%s\" sourcemethod=\"%s\" bundlename=\"%s\" userId=\"%s\"",
+						DATE_FORMAT.format(new Date()),
+						"CORE",
+						UUID.randomUUID().toString(), 
+						level,
+						msg,
+						sourceClass,
+						sourceMethod,
+						bundleName,
+						Env.getAD_User_ID(Env.getCtx()));
+		    	
+			}
+
+    	super.logrb(level, sourceClass, sourceMethod, bundleName,newMsg);
+    }
+	@Override
+    public void logrb(Level level, String sourceClass, String sourceMethod,
+            String bundleName, String msg, Object param1) {
+		String newMsg="";
+		if (msg!=null)
+			if (msg.contains("ATIX")){
+				newMsg = msg;
+			}else{
+				 newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" trackId=\"%s\" level=\"%s\" msg=\"%s\" sourceClass=\"%s\" sourcemethod=\"%s\" bundlename=\"%s\" userId=\"%s\"",
+							DATE_FORMAT.format(new Date()),
+							"CORE",
+							UUID.randomUUID().toString(), 
+							level,
+							msg,
+							sourceClass,
+							sourceMethod,
+							bundleName,
+							Env.getAD_User_ID(Env.getCtx()));
+			}
+    	
+    	super.logrb(level, sourceClass, sourceMethod, bundleName,newMsg,param1);
+    }
+	@Override
+    public void logrb(Level level, String sourceClass, String sourceMethod,
+            String bundleName, String msg, Object params[]) {
+		String newMsg="";
+		if (msg!=null)
+			if (msg.contains("ATIX")){
+				newMsg = msg;
+			}else{
+				 newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" trackId=\"%s\" level=\"%s\" msg=\"%s\" sourceClass=\"%s\" sourcemethod=\"%s\" bundlename=\"%s\" userId=\"%s\"",
+							DATE_FORMAT.format(new Date()),
+							"CORE",
+							UUID.randomUUID().toString(), 
+							level,
+							msg,
+							sourceClass,
+							sourceMethod,
+							bundleName,
+							Env.getAD_User_ID(Env.getCtx()));
+			}
+    	
+    	super.logrb(level, sourceClass, sourceMethod, bundleName,newMsg,params);
+    }
+	@Override
+    public void logrb(Level level, String sourceClass, String sourceMethod,
+            String bundleName, String msg, Throwable thrown) {
+		String newMsg="";
+		if (msg!=null)
+			if (msg.contains("ATIX")){
+				newMsg = msg;
+			}else{
+				newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" thrown=\"%s\" trackId=\"%s\" level=\"%s\" msg=\"%s\" sourceClass=\"%s\" sourcemethod=\"%s\" bundlename=\"%s\" userId=\"%s\"",
+						DATE_FORMAT.format(new Date()),
+						"CORE",
+						thrown.toString(),
+						UUID.randomUUID().toString(), 
+						level,
+						msg,
+						sourceClass,
+						sourceMethod,
+						bundleName,
+						Env.getAD_User_ID(Env.getCtx()));
+			}
+	
+    	
+    	super.logrb(level, sourceClass, sourceMethod, bundleName,newMsg,thrown);
+    }
+	
+    public void logMenu(Level level, String menuType,int itemId) {
+
+		String newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" trackId=\"%s\" level=\"%s\" menuType=\"%s\" itemId=\"%s\" userId=\"%s\"",
+						DATE_FORMAT.format(new Date()),
+						"OPEN_MENU",
+						UUID.randomUUID().toString(), 
+						level,
+						menuType,
+						itemId,
+						Env.getAD_User_ID(Env.getCtx()));
+		super.log(level, newMsg);
+    }
+    
+    public void logRecentItem(Level level, String tableName,int recordId) {
+
+		String newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" trackId=\"%s\" level=\"%s\" tableName=\"%s\" recordId=\"%s\" userId=\"%s\"",
+						DATE_FORMAT.format(new Date()),
+						"OPEN_RECENT_ITEM",
+						UUID.randomUUID().toString(), 
+						level,
+						tableName,
+						recordId,
+						Env.getAD_User_ID(Env.getCtx()));
+		super.log(level, newMsg);
+    }
+    
+    public void logInfo(Level level, String title,String tableName,int fieldId) {
+
+		String newMsg = String.format("COMMUNITY timestamp=\"%s\" type=\"%s\" trackId=\"%s\" level=\"%s\" title=\"%s\" tableName=\"%s\" fieldId=\"%s\" userId=\"%s\"",
+						DATE_FORMAT.format(new Date()),
+						"OPEN_INFO",
+						UUID.randomUUID().toString(), 
+						level,
+						title,
+						tableName,
+						fieldId,
+						Env.getAD_User_ID(Env.getCtx()));
+		super.log(level, newMsg);
+    }	
 }	//	CLogger
