@@ -110,3 +110,5 @@ org.adempiere.base.callout/.classpath
 *.classpath
 **.classpath
 
+./org.adempiere.base.callout/.classpath
+
