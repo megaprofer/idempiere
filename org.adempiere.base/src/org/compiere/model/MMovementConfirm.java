@@ -149,7 +149,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			return m_lines;
 		}
 		String sql = "SELECT * FROM M_MovementLineConfirm "
-			+ "WHERE M_MovementConfirm_ID=?";
+			+ "WHERE M_MovementConfirm_ID=? And IsActive='Y'";
 		ArrayList<MMovementLineConfirm> list = new ArrayList<MMovementLineConfirm>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

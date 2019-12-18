@@ -400,7 +400,7 @@ public class MBPartner extends X_C_BPartner
 			return m_contacts;
 		//
 		ArrayList<MUser> list = new ArrayList<MUser>();
-		final String sql = "SELECT * FROM AD_User WHERE C_BPartner_ID=? ORDER BY AD_User_ID";
+		final String sql = "SELECT * FROM AD_User WHERE C_BPartner_ID=? AND IsActive = 'Y' ORDER BY AD_User_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

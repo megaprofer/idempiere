@@ -71,6 +71,16 @@ public class MInOut extends X_M_InOut implements DocAction
 	 */
 	private static final long serialVersionUID = 1226522383231204912L;
 
+	private boolean wasupdated;
+
+	public boolean isWasupdated() {
+		return wasupdated;
+	}
+
+	public void setWasupdated(boolean wasupdated) {
+		this.wasupdated = wasupdated;
+	}
+	
 	/**
 	 * 	Create Shipment From Order
 	 *	@param order order
@@ -1323,7 +1333,7 @@ public class MInOut extends X_M_InOut implements DocAction
 	            // Load RMA Line
 	            MRMALine rmaLine = null;
 	
-	            if (sLine.getM_RMALine_ID() != 0)
+	            if (sLine.getM_RMALine_ID() != 0 && !wasupdated)
 	            {
 	                rmaLine = new MRMALine(getCtx(), sLine.getM_RMALine_ID(), get_TrxName());
 	            }
@@ -1347,7 +1357,9 @@ public class MInOut extends X_M_InOut implements DocAction
 							return DOCSTATUS_Invalid;
 						}
 						
-						checkMaterialPolicy(sLine,movementQty.subtract(qtyOnLineMA));
+						if (!wasupdated) {
+							checkMaterialPolicy(sLine, movementQty.subtract(qtyOnLineMA));
+						}
 					}
 	
 					log.fine("Material Transaction");

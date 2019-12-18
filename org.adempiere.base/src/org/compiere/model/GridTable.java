@@ -399,8 +399,9 @@ public class GridTable extends AbstractTableModel
 			else
 				where.append(" AND ");
 			//	Show only unprocessed or the one updated within x days
-			where.append("(Processed='N' OR Updated>");
-			where.append("SysDate-1");
+			//where.append("(Processed='N' OR Updated>");
+			where.append("(Updated>");
+			where.append("SysDate-3");
 			where.append(")");
 		}
 
@@ -3581,6 +3582,9 @@ public class GridTable extends AbstractTableModel
 			//	open Statement (closed by Loader.close)
 			try
 			{
+				if (this.maxRows>0){
+					m_SQL = m_SQL+ " LIMIT "+maxRows;
+				}
 				m_pstmt = DB.prepareStatement(m_SQL, trxName);
 				if (this.maxRows > 0 && rows == this.maxRows)
 				{

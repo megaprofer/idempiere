@@ -105,7 +105,7 @@ public class MRMALine extends X_M_RMALine
                 MInvoiceLine invoiceLine = new MInvoiceLine(getCtx(), getInvoiceLineId(), get_TrxName());
                 precision = invoiceLine.getPrecision();
                 unitAmount = invoiceLine.getPriceEntered();
-                originalQty = invoiceLine.getQtyInvoiced();
+                originalQty = invoiceLine.getQtyEntered(); // Se cambia de qty invoided a entered para que conteple la conversion
                 taxId = invoiceLine.getC_Tax_ID();
             }
             else if (m_ioLine.getC_OrderLine_ID() != 0)
@@ -355,7 +355,7 @@ public class MRMALine extends X_M_RMALine
     
     public boolean checkQty() 
     {
-        if (m_ioLine.getMovementQty().compareTo(getQty()) < 0)
+        if (m_ioLine.getQtyEntered().compareTo(getQty()) < 0)
         	return false;
         
         BigDecimal totalQty = DB.getSQLValueBD(get_TrxName(), 
@@ -364,7 +364,7 @@ public class MRMALine extends X_M_RMALine
         if (totalQty == null)
         	totalQty = Env.ZERO;
         totalQty = totalQty.add(getQty());
-        if (m_ioLine.getMovementQty().compareTo(totalQty) < 0)
+        if (m_ioLine.getQtyEntered().compareTo(totalQty) < 0)
         	return false;
         
 		return true;

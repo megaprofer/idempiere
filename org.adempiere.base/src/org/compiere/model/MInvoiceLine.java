@@ -249,12 +249,15 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		setRRStartDate(oLine.getRRStartDate());
 	}	//	setOrderLine
 
+	public void setShipLine(MInOutLine sLine) {
+		setShipLine(sLine, false);
+	} // setShipLine
 	/**
 	 * 	Set values from Shipment Line.
 	 * 	Does not set quantity!
 	 *	@param sLine ship line
 	 */
-	public void setShipLine (MInOutLine sLine)
+	public void setShipLine (MInOutLine sLine , boolean was_upd)
 	{
 		setM_InOutLine_ID(sLine.getM_InOutLine_ID());
 		setC_OrderLine_ID(sLine.getC_OrderLine_ID());
@@ -299,12 +302,14 @@ public class MInvoiceLine extends X_C_InvoiceLine
         else if (sLine.getM_RMALine_ID() != 0)
         {
         	// Set Pricing details from the RMA Line on which it is based
-            MRMALine rmaLine = new MRMALine(getCtx(), sLine.getM_RMALine_ID(), get_TrxName());
+			if (!was_upd) {
+				MRMALine rmaLine = new MRMALine(getCtx(), sLine.getM_RMALine_ID(), get_TrxName());
 
-            setPrice();
-            setPrice(rmaLine.getAmt());
-            setC_Tax_ID(rmaLine.getC_Tax_ID());
-            setLineNetAmt(rmaLine.getLineNetAmt());
+				setPrice();
+				setPrice(rmaLine.getAmt());
+				setC_Tax_ID(rmaLine.getC_Tax_ID());
+				setLineNetAmt(rmaLine.getLineNetAmt());
+			}
         }
 		else
 		{

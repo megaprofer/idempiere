@@ -99,7 +99,7 @@ public final class MLookup extends Lookup implements Serializable
 	/** Inactive Marker End         */
 	public static final String  INACTIVE_E = "~";
 	/** Number of max rows to load	*/
-	private static final int	MAX_ROWS = 5000;
+	private static final int	MAX_ROWS = 1000;
 	/**	Indicator for Null			*/
 	private static Integer 		MINUS_ONE = Integer.valueOf(-1);
 
@@ -856,6 +856,7 @@ public final class MLookup extends Lookup implements Serializable
 			try
 			{
 				//	SELECT Key, Value, Name, IsActive FROM ...
+				sql.append(" LIMIT 1000 ");
 				pstmt = DB.prepareStatement(sql.toString(), null);
 				rs = pstmt.executeQuery();
 

@@ -1934,12 +1934,14 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 			//
 			shipment = createShipment (dt, realTimePOS ? null : getDateOrdered());
-			if (shipment == null)
+			if (dt.get_Value("is_mega") != null && !dt.get_ValueAsBoolean("is_mega") && shipment == null)
 				return DocAction.STATUS_Invalid;
+			if (shipment != null) {
 			info.append("@M_InOut_ID@: ").append(shipment.getDocumentNo());
 			String msg = shipment.getProcessMsg();
 			if (msg != null && msg.length() > 0)
 				info.append(" (").append(msg).append(")");
+			}
 		}	//	Shipment
 		
 
@@ -2154,6 +2156,9 @@ public class MOrder extends X_C_Order implements DocAction
 	protected MInOut createShipment(MDocType dt, Timestamp movementDate)
 	{
 		if (log.isLoggable(Level.INFO)) log.info("For " + dt);
+		if (dt.get_Value("is_mega")!= null &&  dt.get_ValueAsBoolean("is_mega")) {
+			return null;
+		}
 		MInOut shipment = new MInOut (this, dt.getC_DocTypeShipment_ID(), movementDate);
 	//	shipment.setDateAcct(getDateAcct());
 		if (!shipment.save(get_TrxName()))

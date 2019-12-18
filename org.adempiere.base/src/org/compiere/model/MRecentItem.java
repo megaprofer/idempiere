@@ -13,9 +13,11 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,6 +33,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Util;
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
@@ -308,35 +311,37 @@ public class MRecentItem extends X_AD_RecentItem
 			windowName = win.get_Translation("Name");
 		}
 		MTable table = MTable.get(getCtx(), getAD_Table_ID());
-		PO po = table.getPO(getRecord_ID(), null);
-		if (po == null) {
-			/* Recent Item was deleted (probably with direct SQL DELETE) */
-			this.deleteEx(true, null);
-			return null;
-		}
+//		PO po = table.getPO(getRecord_ID(), null);
+//		if (po == null) {
+//			/* Recent Item was deleted (probably with direct SQL DELETE) */
+//			this.deleteEx(true, null);
+//			return null;
+//		}
 
 		String titleLogic = win.getTitleLogic();
 		StringBuilder recordIdentifier = new StringBuilder("");
 
 		if (! Util.isEmpty(titleLogic)) { // default way
-			titleLogic = Env.parseVariable(titleLogic, po, null, false);
-			if (! Util.isEmpty(titleLogic))
 				recordIdentifier.append(" ").append(titleLogic);
 		}
+		try{
+			String sqlIdentifier = "select ad_column_id,columnname from ad_column where ad_table_id = ? "
+					+ "and columnname in ('DocumentNo','Value','Name')";
+			KeyNamePair[] columnsIdentifiers = DB.getKeyNamePairs(sqlIdentifier, false, getAD_Table_ID());
 
-		if (recordIdentifier.length() == 0) {
-			if (po.get_ColumnIndex("DocumentNo") != -1)
-				recordIdentifier.append(" ").append(po.get_ValueAsString("DocumentNo"));
-			if (po.get_ColumnIndex("Value") != -1)
-				recordIdentifier.append(" ").append(po.get_ValueAsString("Value"));
-			if (po.get_ColumnIndex("Name") != -1)
-				recordIdentifier.append(" ").append(po.get_ValueAsString("Name"));
+			for (KeyNamePair key : columnsIdentifiers) {
+
+				String sqlItem = "SELECT "+key.getName()+" FROM " + table.getTableName() + " WHERE "+table.getKeyColumns()[0]+"=?";
+				String identifier = DB.getSQLValueString(null,sqlItem, getRecord_ID());
+				recordIdentifier.append(" ").append(identifier);
+
+			}
 			if (recordIdentifier.length() == 0)
-				recordIdentifier.append(" ").append(po.toString());
-			if (recordIdentifier.length() == 0)
-				recordIdentifier.append(" [").append(po.get_ID()).append("]");
+				recordIdentifier.append(" [").append(getRecord_ID()).append("]");
 			if (recordIdentifier.length() == 0)
 				recordIdentifier.append(" [no identifier]");
+		}catch(Exception e){
+			return null;
 		}
 		m_label = windowName + ": " + recordIdentifier.substring(1);
         if (s_log.isLoggable(Level.INFO)) s_log.info(m_label);

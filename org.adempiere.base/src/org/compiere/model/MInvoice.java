@@ -1910,13 +1910,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			//Update QtyInvoiced RMA Line
 			if (line.getM_RMALine_ID() != 0)
 			{
-				MRMALine rmaLine = new MRMALine (getCtx(),line.getM_RMALine_ID(), get_TrxName());
-				if (rmaLine.getQtyInvoiced() != null)
-					rmaLine.setQtyInvoiced(rmaLine.getQtyInvoiced().add(line.getQtyInvoiced()));
-				else
-					rmaLine.setQtyInvoiced(line.getQtyInvoiced());
-				if (!rmaLine.save(get_TrxName()))
-				{
+				int no = DB.executeUpdateEx("UPDATE M_RMALine SET QtyInvoiced = COALESCE(QtyInvoiced,0) + ? WHERE M_RMALine_ID = ?", new Object[]{ line.getQtyInvoiced(), line.getM_RMALine_ID()}, get_TrxName());
+				if(no != 1){
 					m_processMsg = "Could not update RMA Line";
 					return DocAction.STATUS_Invalid;
 				}

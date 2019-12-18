@@ -201,7 +201,7 @@ public class MMovementLine extends X_M_MovementLine
 				// zero allowed in this case (action Void and status Draft)
 			} else {
 				log.saveError("FillMandatory", Msg.getElement(getCtx(), "MovementQty"));
-				return false;
+				//return false;
 			}
 		}
 

@@ -59,7 +59,7 @@ public class MSequence extends X_AD_Sequence
 	/** Log Level for Next ID Call					*/
 	private static final Level LOGLEVEL = Level.ALL;
 
-	private static final int QUERY_TIME_OUT = 30;
+	private static int QUERY_TIME_OUT = 120;
 	
 	private static final String NoYearNorMonth = "-";
 
@@ -845,6 +845,7 @@ public class MSequence extends X_AD_Sequence
 	public MSequence (Properties ctx, int AD_Sequence_ID, String trxName)
 	{
 		super(ctx, AD_Sequence_ID, trxName);
+		QUERY_TIME_OUT = MSysConfig.getIntValue("ALQ_QUERY_TIME_OUT", QUERY_TIME_OUT);
 		if (AD_Sequence_ID == 0)
 		{
 		//	setName (null);
