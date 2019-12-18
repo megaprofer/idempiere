@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import javax.script.ScriptEngine;
@@ -206,7 +207,7 @@ public class ModelValidationEngine
 		if (client == null)
 			m_globalValidators.add(validator);
 		m_validators.add(validator);
-		validator.initialize(this, client);
+		initializeLog(validator, client);
 
 	}	//	initialize
 
@@ -928,5 +929,22 @@ public class ModelValidationEngine
 				}
 			}
 		}
+	}
+	private void initializeLog(ModelValidator validator, MClient client) {
+		String trackId = UUID.randomUUID().toString();
+		long startTime = System.currentTimeMillis();
+
+		validator.initialize(this, client);
+
+		long endTime = System.currentTimeMillis();
+
+		long totalTime = endTime - startTime;
+
+		log.log(Level.WARNING, String.format(
+				">>----<z> type=VALIDATOR class=%s process=%s trackId=%s duration=%d userID=%s action=initialize",
+				this.getClass().getName(), validator.getClass().getName(), trackId, totalTime,
+				Env.getAD_User_ID(Env.getCtx())
+
+		));
 	}
 }	//	ModelValidatorEngine
