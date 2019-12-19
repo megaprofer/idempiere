@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
@@ -40,6 +41,10 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
+import org.alquimiasoft.logger.manager.LoggerManager;
+import org.alquimiasoft.logger.manager.impl.LoggerManagerImpl;
+import org.alquimiasoft.logger.template.LoggerTemplateBuilder;
+import org.alquimiasoft.logger.util.Chronometer;
 import org.compiere.model.GridTab;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -53,6 +58,8 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -72,7 +79,7 @@ public class ReportAction implements EventListener<Event>
 	private static final CLogger log = CLogger.getCLogger(ReportAction.class);
 	
 	private AbstractADWindowContent panel;
-	
+	private BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
 	private Window winReport = null;
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private Listbox cboPrintFormat = new Listbox();
@@ -226,7 +233,18 @@ public class ReportAction implements EventListener<Event>
 			cboExportType.setVisible(chkExport.isChecked());
 		else if (event.getName().equals("onValidate")) {
 			try {
+				LoggerManager loggerManager = new LoggerManagerImpl();
+				String trackId = UUID.randomUUID().toString();
+					loggerManager.writeLoggerTemplate(LoggerTemplateBuilder.html().trackID(trackId).level("INFO_START")
+							.processID(panel.getActiveGridTab().getAD_Window_ID())
+							.userID(Env.getAD_User_ID(Env.getCtx())).view("html"));
+				Chronometer chronometer = new Chronometer();
+				chronometer.start();
 				validate();
+				chronometer.stop();
+				loggerManager.writeLoggerTemplate(LoggerTemplateBuilder.html().trackID(trackId).level("INFO_END")
+						.processID(panel.getActiveGridTab().getAD_Window_ID()).duration(chronometer.getTotalTime())
+						.userID(Env.getAD_User_ID(Env.getCtx())).view("html"));
 			} finally {
 				Clients.clearBusy();
 				panel.getComponent().invalidate();

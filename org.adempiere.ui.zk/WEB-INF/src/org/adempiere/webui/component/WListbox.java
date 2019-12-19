@@ -138,6 +138,40 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 
 	    return;
 	}
+	/**
+	 * Set the data model and column header names for the Listbox.
+	 *
+	 * @param model       The data model to assign to the table
+	 * @param columnNames The names of the table columns
+	 */
+	public void setDataMsgoon6(ListModelTable model, List<? extends String> columnNames) {
+		WListItemRendererMsgoon6 rowRenderer = null;
+		if (columnNames != null && columnNames.size() > 0) {
+			// instantiate our custom row renderer
+			rowRenderer = new WListItemRendererMsgoon6(columnNames);
+
+			// add listener for listening to component changes
+			rowRenderer.addTableValueChangeListener(this);
+		}
+		// assign the model and renderer
+		this.setModel(model);
+		if (rowRenderer != null) {
+			getModel().setNoColumns(columnNames.size());
+			this.setItemRenderer(rowRenderer);
+
+			// recreate listhead if needed
+			ListHead head = super.getListHead();
+			if (head != null) {
+				head.getChildren().clear();
+				rowRenderer.renderListHead(head);
+			}
+		}
+
+		// re-render
+		this.repaint();
+
+		return;
+	}
 
     public void setModel(ListModel<?> model)
     {
@@ -502,7 +536,26 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
  		return;
 	}
 
+	/**
+	 * Set the attributes of the column.
+	 *
+	 * @param index     The index of the column to be modified
+	 * @param classType The class of data that the column will contain
+	 * @param readOnly  Whether the data in the column is read only
+	 *
+	 * @see #setColumnClass(int, Class, boolean, String)
+	 */
+	public void setColumnClassMsgoon6(int index, Class<?> classType, boolean readOnly) {
+		setColumnReadOnly(index, readOnly);
 
+		WListItemRendererMsgoon6 renderer = (WListItemRendererMsgoon6) getItemRenderer();
+
+		renderer.setColumnClass(index, classType);
+
+		m_modelHeaderClass.add(classType);
+
+		return;
+	}
 
 
     /**
@@ -516,15 +569,19 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
      */
     public void setColumnClass (int index, Class<?> classType, boolean readOnly)
     {
-        setColumnReadOnly(index, readOnly);
-
-        WListItemRenderer renderer = (WListItemRenderer)getItemRenderer();
-
-        renderer.setColumnClass(index, classType);
-
-        m_modelHeaderClass.add(classType);
-
-        return;
+    	try {
+	        setColumnReadOnly(index, readOnly);
+	
+	        WListItemRenderer renderer = (WListItemRenderer)getItemRenderer();
+	
+	        renderer.setColumnClass(index, classType);
+	
+	        m_modelHeaderClass.add(classType);
+	
+	        return;
+		} catch (Exception e) {
+			setColumnClassMsgoon6(index, classType, readOnly);
+		}
     }
 
 	/**

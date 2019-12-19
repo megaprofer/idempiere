@@ -10,5 +10,20 @@
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/ckez.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/daisydiff.jar"/>
 	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/owasp-java-html-sanitizer.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/gson.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/hk2-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/hk2-locator.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/hk2-utils.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/javax.annotation-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/javax.inject.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/javax.servlet-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/javax.ws.rs-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/jaxb-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/jersey-client.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/jersey-common.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/jersey-container-servlet.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/jersey-guava.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/jersey-server.jar"/>
+	<classpathentry exported="true" kind="lib" path="WEB-INF/lib/validation-api.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

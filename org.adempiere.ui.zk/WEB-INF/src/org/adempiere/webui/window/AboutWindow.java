@@ -343,7 +343,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	}
 
 	private void updateLogTable() {
-		Vector<Vector<Object>> data = CLogErrorBuffer.get(true).getLogData(bErrorsOnly.isChecked());
+		Vector<Vector<Object>> data = CLogErrorBuffer.get(true).getLogData(true);
 		SimpleListModel model = new SimpleListModel(data);
 		model.setMaxLength(new int[]{0, 0, 0, 200, 0, 200});
 		logTable.setItemRenderer(model);
@@ -818,13 +818,13 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	}
 
 	private void downloadLog() {
-		String log = CLogErrorBuffer.get(true).getErrorInfo(Env.getCtx(), bErrorsOnly.isChecked());
+		String log = CLogErrorBuffer.get(true).getErrorInfo(Env.getCtx(), true);
 		AMedia media = new AMedia("trace.log", null, "text/plain", log.getBytes());
 		Filedownload.save(media);
 	}
 
 	private void viewLog() {
-		String log = CLogErrorBuffer.get(true).getErrorInfo(Env.getCtx(), bErrorsOnly.isChecked());
+		String log = CLogErrorBuffer.get(true).getErrorInfo(Env.getCtx(),true);
 		Window w = new Window();
 		w.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		w.setTitle("View Log");
