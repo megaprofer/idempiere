@@ -20,10 +20,15 @@ import java.io.InvalidClassException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ProcessUtil;
+import org.alquimiasoft.logger.manager.LoggerManager;
+import org.alquimiasoft.logger.manager.impl.LoggerManagerImpl;
+import org.alquimiasoft.logger.template.LoggerTemplateBuilder;
+import org.alquimiasoft.logger.util.Chronometer;
 import org.compiere.db.CConnection;
 import org.compiere.interfaces.Server;
 import org.compiere.model.MPInstance;
@@ -40,6 +45,9 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFProcess;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 /**
  *	Process Interface Controller.
@@ -57,6 +65,9 @@ import org.compiere.wf.MWFProcess;
  */
 public abstract class AbstractProcessCtl implements Runnable
 {
+	BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass())
+			.getBundleContext();
+	
 	/**************************************************************************
 	 *  Constructor
 	 *  @param parent Container & ASyncProcess
@@ -270,7 +281,7 @@ public abstract class AbstractProcessCtl implements Runnable
 		{
 			m_pi.setReportingProcess(true);
 			m_pi.setClassName(ProcessUtil.JASPER_STARTER_CLASS);
-			startProcess();
+			executeReport(false,"jasper");
 			MPInstance pinstance = new MPInstance(Env.getCtx(), m_pi.getAD_PInstance_ID(), null);
 			if (m_pi.getReportType() != null)
 				pinstance.setReportType(m_pi.getReportType());
@@ -289,7 +300,8 @@ public abstract class AbstractProcessCtl implements Runnable
 		{
 			m_pi.setReportingProcess(true);
 			//	Start Report	-----------------------------------------------
-			boolean ok = ReportCtl.start(m_processUI, windowno, m_pi, IsDirectPrint);
+			//boolean ok = ReportCtl.start(m_processUI, windowno, m_pi, IsDirectPrint);
+			boolean ok = executeReport(IsDirectPrint,"html");
 			m_pi.setSummary(Msg.getCleanMsg(Env.getCtx(), "Report"), !ok);
 			MPInstance pinstance = new MPInstance(Env.getCtx(), m_pi.getAD_PInstance_ID(), null);
 			String errmsg = pinstance.getErrorMsg();
@@ -538,6 +550,38 @@ public abstract class AbstractProcessCtl implements Runnable
 	//	if (log.isLoggable(Level.FINE)) log.fine(Log.l4_Data, "ProcessCtl.startProcess - done");
 		return true;
 	}   //  startDBProcess
+	private boolean executeReport(boolean IsDirectPrint, String view) {
+		String trackID = UUID.randomUUID().toString();
+		boolean success = false;
+		LoggerManager loggerManager = new LoggerManagerImpl();
+		if (loggerManager != null) {
+			loggerManager.writeLoggerTemplate(LoggerTemplateBuilder.html()
+					.trackID(trackID).duration(0).level("INFO_START")
+					.processID(m_pi.getAD_Process_ID())
+					.pinstanceID(m_pi.getAD_PInstance_ID())
+					.userID(m_pi.getAD_User_ID()).view(view));
+		}
+
+
+		Chronometer chronometer = new Chronometer();
+		chronometer.start();
+		if (view.equals("html"))
+			success = ReportCtl.start(m_processUI, windowno, m_pi,
+					IsDirectPrint);
+		if (view.equals("jasper"))
+			success = startProcess();
+		chronometer.stop();
+
+		if (loggerManager != null) {
+			loggerManager.writeLoggerTemplate(LoggerTemplateBuilder.html()
+					.trackID(trackID).duration(chronometer.getTotalTime())
+					.level("INFO_END").processID(m_pi.getAD_Process_ID())
+					.pinstanceID(m_pi.getAD_PInstance_ID())
+					.userID(m_pi.getAD_User_ID()).view(view));
+		}
+
+		return success;
+	}
 
 	
 }	//	ProcessCtl
