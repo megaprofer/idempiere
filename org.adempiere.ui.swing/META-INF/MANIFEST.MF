@@ -68,11 +68,11 @@ Export-Package: com.jgoodies.looks,
  org.jdesktop.swingx.tree,
  org.jdesktop.swingx.treetable,
  org.jdesktop.swingx.util
-Require-Bundle: org.adempiere.ui;bundle-version="0.0.0",
+Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
+ org.adempiere.ui;bundle-version="0.0.0",
  org.restlet;bundle-version="0.0.0",
  org.restlet.ext.servlet;bundle-version="0.0.0",
- org.jfree.chart-osgi;bundle-version="1.0.19",
- org.adempiere.base;bundle-version="0.0.0"
+ org.jfree.chart-osgi;bundle-version="1.0.19"
 Eclipse-ExtensibleAPI: true
 Eclipse-RegisterBuddy: org.adempiere.base
 Bundle-RequiredExecutionEnvironment: JavaSE-11
